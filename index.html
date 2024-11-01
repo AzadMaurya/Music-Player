@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Music Player</title>
+    <script src="https://kit.fontawesome.com/cc2baeb513.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="music-player">
+            <nav>
+                <div class="circle">
+                    <i class="fa-solid fa-angle-left"></i>
+                </div>
+                <div class="circle">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+            </nav>
+            <img src="pic2.jpg" alt="Album cover" class="song-img" id="songImg">
+            <h1 id="songTitle">Despacito</h1>
+            <p id="songArtist">Party Mashup.....</p>
+            <audio id="song">
+                <source src="songs/Party Mashup.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+            <input type="range" value="0" id="progress" aria-label="Song progress">
+            <div class="controls">
+                <div onclick="prevSong()"><i class="fa-solid fa-backward"></i></div>
+                <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
+                <div onclick="nextSong()"><i class="fa-solid fa-forward"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const songs = [
+            {
+                title: "Despacito",
+                artist: "Party Mashup",
+                file: "songs/Party Mashup.mp3",
+                image: "pic2.jpg"
+            },
+            {
+                title: "Song 2",
+                artist: "Artist 2",
+                file: "songs/mashup1.mp3",
+                image: "pic1.jpg"
+            },
+            {
+                title: "Song 3",
+                artist: "Artist 3",
+                file: "songs/Sajni Mashup.mp3",
+                image: "pic2.jpg"
+            },
+            {
+                title: "Song 4",
+                artist: "Artist 4",
+                file: "songs/KK Mashup.mp3",
+                image: "pic1.jpg"
+            },
+            {
+                title: "Song 5",
+                artist: "Artist 5",
+                file: "songs/Unconfessed Love.mp3",
+                image: "pic2.jpg"
+            }
+            
+        ];
+
+        let currentSongIndex = 0;
+        let song = document.getElementById("song");
+        let progress = document.getElementById("progress");
+        let ctrlIcon = document.getElementById("ctrlIcon");
+        let songTitle = document.getElementById("songTitle");
+        let songArtist = document.getElementById("songArtist");
+        let songImg = document.getElementById("songImg");
+
+        function loadSong(index) {
+            const songData = songs[index];
+            song.src = songData.file;
+            songTitle.textContent = songData.title;
+            songArtist.textContent = songData.artist;
+            songImg.src = songData.image;
+            progress.value = 0;
+            song.load();
+        }
+
+        function playPause() {
+            if (ctrlIcon.classList.contains("fa-pause")) {
+                song.pause();
+                ctrlIcon.classList.remove("fa-pause");
+                ctrlIcon.classList.add("fa-play");
+            } else {
+                song.play();
+                ctrlIcon.classList.add("fa-pause");
+                ctrlIcon.classList.remove("fa-play");
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            setInterval(() => {
+                if (!song.paused) {
+                    progress.value = song.currentTime;
+                }
+            }, 500);
+        }
+
+        progress.oninput = function() {
+            song.currentTime = progress.value;
+            if (song.paused) {
+                playPause();
+            }
+        };
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+            playPause();
+        }
+
+        function prevSong() {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            loadSong(currentSongIndex);
+            playPause();
+        }
+
+        // Initial load of the first song
+        loadSong(currentSongIndex);
+    </script>
+</body>
+</html>
